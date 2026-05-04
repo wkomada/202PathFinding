@@ -87,24 +87,21 @@ vector<pair<int,int>> bfsShortestPath(vector<vector<int>>& grid,
 }
 
 int main() {
-    int n, m;
-    cout << "Enter rows (n) and columns (m): ";
-    cin >> n >> m;
+    int n;
 
-    cout << "Enter grid as a string of 0s and 1s (length = " << n*m << "): ";
+    cout << "Insert a string to be converted to a maze: ";
     string input;
-    cin >> input;
-
-    if (input.length() != n * m) {
-        cout << "Invalid input length.\n";
-        return 1;
-    }
+    getline(cin, input, '\n');
+    string maze = makeMaze(input);
+    n = sqrt(maze.size());
 
     // Convert string to grid
-    vector<vector<int>> grid(n, vector<int>(m));
-    for (int i = 0; i < n * m; i++) {
-        grid[i / m][i % m] = input[i] - '0';
+    vector<vector<int>> grid(n, vector<int>(n));
+    for (int i = 0; i < n * n; i++) {
+        grid[i / n][i % n] = maze[i] - '0';
     }
+
+    cout << "Your maze will be " << n << "x" << n << "!" << endl;
 
     pair<int,int> start, goal;
     cout << "Enter start (row col): ";
@@ -125,11 +122,11 @@ int main() {
     // Print grid with path
     cout << "\nGrid with path:\n";
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
+        for (int j = 0; j < n; j++) {
             string key = to_string(i) + "," + to_string(j);
 
             if (pathSet.count(key)) {
-                cout << "P ";
+                cout << "\033[32m" << "P " << "\033[0m";
             } else if (grid[i][j] == 1) {
                 cout << "# ";
             } else {
