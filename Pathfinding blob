@@ -1,0 +1,123 @@
+//https://en.cppreference.com/c/language/struct
+//https://www.geeksforgeeks.org/cpp/unordered_set-in-cpp-stl/
+
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <unordered_set>
+
+using namespace std;
+
+//Used for each position on the grid
+struct Node {
+    int x, y;
+    vector<pair<int,int>> path;
+};
+
+// BFS function
+vector<pair<int,int>> bfsShortestPath(vector<vector<int>>& grid,
+                                      pair<int,int> start,
+                                      pair<int,int> goal) {
+    
+    int rows = grid.size();
+    int cols = grid[0].size();
+
+    vector<vector<bool>> visited(rows, vector<bool>(cols, false));
+    queue<Node> q;
+
+    q.push({start.first, start.second, {start}});
+    visited[start.first][start.second] = true;
+
+    vector<pair<int,int>> directions = {
+        {1,0}, {-1,0}, {0,1}, {0,-1}
+    };
+
+    while (!q.empty()) {
+        Node current = q.front();
+        q.pop();
+
+        if (current.x == goal.first && current.y == goal.second) {
+            return current.path;
+        }
+
+        for (auto& d : directions) {
+            int nx = current.x + d.first;
+            int ny = current.y + d.second;
+
+            if (nx >= 0 && nx < rows &&
+                ny >= 0 && ny < cols &&
+                !visited[nx][ny] &&
+                grid[nx][ny] == 0) {
+
+                visited[nx][ny] = true;
+
+                auto newPath = current.path;
+                newPath.push_back({nx, ny});
+
+                q.push({nx, ny, newPath});
+            }
+        }
+    }
+
+    return {};
+}
+
+int main() {
+    int n, m;
+    cout << "Enter rows (n) and columns (m): ";
+    cin >> n >> m;
+
+    cout << "Enter grid as a string of 0s and 1s (length = " << n*m << "): ";
+    string input;
+    cin >> input;
+
+    if (input.length() != n * m) {
+        cout << "Invalid input length.\n";
+        return 1;
+    }
+
+    // Convert string to grid
+    vector<vector<int>> grid(n, vector<int>(m));
+    for (int i = 0; i < n * m; i++) {
+        grid[i / m][i % m] = input[i] - '0';
+    }
+
+    pair<int,int> start, goal;
+    cout << "Enter start (row col): ";
+    cin >> start.first >> start.second;
+
+    cout << "Enter goal (row col): ";
+    cin >> goal.first >> goal.second;
+
+    // Run BFS
+    auto path = bfsShortestPath(grid, start, goal);
+
+    // Store path for quick lookup
+    unordered_set<string> pathSet;
+    for (auto& p : path) {
+        pathSet.insert(to_string(p.first) + "," + to_string(p.second));
+    }
+
+    // Print grid with path
+    cout << "\nGrid with path:\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            string key = to_string(i) + "," + to_string(j);
+
+            if (pathSet.count(key)) {
+                cout << "P ";
+            } else if (grid[i][j] == 1) {
+                cout << "# ";
+            } else {
+                cout << ". ";
+            }
+        }
+        cout << endl;
+    }
+
+    if (path.empty()) {
+        cout << "\nNo path found.\n";
+    }
+
+    return 0;
+}
