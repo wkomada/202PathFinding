@@ -1,9 +1,12 @@
 //https://en.cppreference.com/c/language/struct
 //https://www.geeksforgeeks.org/cpp/unordered_set-in-cpp-stl/
+//https://en.cppreference.com/cpp/utility/bitset
 
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <cmath>
+#include <bitset>
 #include <unordered_set>
 
 using namespace std;
@@ -13,6 +16,27 @@ struct Node {
     int x, y;
     vector<pair<int,int>> path;
 };
+
+// Takes an input string of characters, converts them to binary, and then sets up / returns the maze string.
+string makeMaze(string input_string) {
+
+    string total = "";
+
+    // Converts each character to binary -- for ex, a = 01100001
+    for (size_t i = 0; i < input_string.size(); i++) {
+        string toBinary = bitset<8>(input_string[i]).to_string();
+
+        // Changes string size to cut out alphabet/case tag (011 for lowercase, 010 for upper)
+        total += (toBinary.substr(3, toBinary.length()-1));
+    }
+
+    // Allows for clean square form -- for upper bound essentially takes sqrt, truncates to integer,
+    // then squares to make the size a clean square root.
+    string maze = total.substr( 0, pow( int(sqrt(total.size())) , 2 ) );
+
+    return maze;
+
+}
 
 // BFS function
 vector<pair<int,int>> bfsShortestPath(vector<vector<int>>& grid,
