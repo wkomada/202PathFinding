@@ -1,6 +1,7 @@
 //https://en.cppreference.com/c/language/struct
 //https://www.geeksforgeeks.org/cpp/unordered_set-in-cpp-stl/
 //https://en.cppreference.com/cpp/utility/bitset
+//https://www.geeksforgeeks.org/cpp/how-to-change-console-color-in-cpp/
 
 #include <iostream>
 #include <vector>
@@ -86,59 +87,152 @@ vector<pair<int,int>> bfsShortestPath(vector<vector<int>>& grid,
     return {};
 }
 
-int main() {
-    int n;
+void printMaze(vector<vector<int>> &grid, int n, unordered_set<string> &pathSet, bool solution) {
 
-    cout << "Insert a string to be converted to a maze: ";
-    string input;
-    getline(cin, input, '\n');
-    string maze = makeMaze(input);
-    n = sqrt(maze.size());
+    cout << endl << "  ";
 
-    // Convert string to grid
-    vector<vector<int>> grid(n, vector<int>(n));
-    for (int i = 0; i < n * n; i++) {
-        grid[i / n][i % n] = maze[i] - '0';
-    }
+    for (int i = 0; i < n; i++)
+        cout << "\033[90m" << " " << i << " " <<  "\033[0m";
+    cout << endl;
 
-    cout << "Your maze will be " << n << "x" << n << "!" << endl;
-
-    pair<int,int> start, goal;
-    cout << "Enter start (row col): ";
-    cin >> start.first >> start.second;
-
-    cout << "Enter goal (row col): ";
-    cin >> goal.first >> goal.second;
-
-    // Run BFS
-    auto path = bfsShortestPath(grid, start, goal);
-
-    // Store path for quick lookup
-    unordered_set<string> pathSet;
-    for (auto& p : path) {
-        pathSet.insert(to_string(p.first) + "," + to_string(p.second));
-    }
-
-    // Print grid with path
-    cout << "\nGrid with path:\n";
     for (int i = 0; i < n; i++) {
+        cout << "\033[90m"<< i << " " << "\033[0m";
+        if (i < 10)
+            cout << " ";
+
         for (int j = 0; j < n; j++) {
             string key = to_string(i) + "," + to_string(j);
 
-            if (pathSet.count(key)) {
-                cout << "\033[32m" << "P " << "\033[0m";
-            } else if (grid[i][j] == 1) {
-                cout << "# ";
+            if (j > 10)
+                cout << " ";
+
+            // Only checks pathSet if the printed maze is a solution (i.e. there is a path to print)
+            if (solution && pathSet.count(key)) {
+                cout << "\033[32m" << "P  " << "\033[0m";  // Prints path in green
+            }
+
+            else if (grid[i][j] == 1) {
+                cout << "#  ";
             } else {
-                cout << ". ";
+                cout << "\033[90m"<< ".  " << "\033[0m";
             }
         }
         cout << endl;
     }
 
-    if (path.empty()) {
-        cout << "\nNo path found.\n";
-    }
+    cout << endl;
+
+}
+
+int main() {
+    int n;
+    bool maze_loop = false;
+
+    // maze_loop initialized as false so that cin.ignore() is only called after a loop
+    do {
+
+        cout << "Insert a string to be converted to a maze, or type 'q' to quit: ";
+
+        // Only runs on loops -- without this, getline() tries to read from prior loop
+        if (maze_loop)
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        string input = "";
+        getline(cin, input, '\n');
+
+        while (input == "") {
+            cout << "Maze is empty. Please insert a new string: ";
+            getline(cin, input, '\n');
+        }
+
+        if (input == "q")
+            break;
+
+        string maze = makeMaze(input);
+        n = sqrt(maze.size());
+
+        // Convert string to grid
+        vector<vector<int>> grid(n, vector<int>(n));
+        for (int i = 0; i < n * n; i++) {
+            grid[i / n][i % n] = maze[i] - '0';
+        }
+
+        cout << "Your maze will be " << n << "x" << n << "!" << endl;
+        bool path_loop = true;
+
+        // Loop for trying different paths in the same maze
+        while (path_loop) {
+
+            // Store path for quick lookup -- not used until solution path is found, but initiallized now for maze printing
+            unordered_set<string> pathSet;
+
+            printMaze(grid, n, pathSet, false);
+
+            pair<int,int> start, goal;
+            cout << "Enter start (row col): ";
+            cin >> start.first >> start.second;
+
+            // Error checking inputs for bounds and non-int input
+            while (start.first > n || start.second > n || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                cout << "Invalid input. Enter a new start point: ";
+                cin >> start.first >> start.second;
+            }
+
+            cout << "Enter goal (row col): ";
+            cin >> goal.first >> goal.second;
+
+            // Error checking inputs for bounds and non-int input
+            while (goal.first > n || goal.second > n || !cin) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                cout << "Invalid input. Enter a new end point: ";
+                cin >> goal.first >> goal.second;
+            }
+
+            // Run BFS
+            auto path = bfsShortestPath(grid, start, goal);
+
+            for (auto& p : path) {
+                pathSet.insert(to_string(p.first) + "," + to_string(p.second));
+            }
+
+            // Print grid with path
+            cout << "\nGrid with path:\n";
+
+            printMaze(grid, n, pathSet, true);
+
+            if (path.empty()) {
+                cout << "\nNo path found.\n\n";
+            }
+
+            char repeat;
+            cout << "Would you like to try a new path, create a new maze, or quit? ('p' for path, 'm' for maze, 'q' to quit): ";
+            cin >> repeat;
+
+            while (repeat != 'p' && repeat != 'm' && repeat != 'q') {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                cout << "Invalid input. Please respond 'p' to try a new path, 'm' to try a new maze, or 'q' to quit: ";
+                cin >> repeat;
+            }
+
+            if (repeat == 'q')
+                return 0;
+
+            if (repeat == 'p')
+                path_loop = true;
+
+            if (repeat == 'm')
+                path_loop = false;
+                maze_loop = true;
+        }    
+
+    } while (maze_loop);
 
     return 0;
 }
