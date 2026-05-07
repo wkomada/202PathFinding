@@ -173,7 +173,7 @@ int main() {
             cin >> start.first >> start.second;
 
             // Error checking inputs for bounds and non-int input
-            while (start.first > n || start.second > n || !cin) {
+            while (start.first >= n || start.second >= n || start.first < 0 || start.second < 0 ||  !cin) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
@@ -185,7 +185,7 @@ int main() {
             cin >> goal.first >> goal.second;
 
             // Error checking inputs for bounds and non-int input
-            while (goal.first > n || goal.second > n || !cin) {
+            while (goal.first >= n || goal.second >= n || goal.first < 0 || goal.second < 0 || !cin) {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
