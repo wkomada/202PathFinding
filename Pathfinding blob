@@ -40,9 +40,7 @@ string makeMaze(string input_string) {
 }
 
 // BFS function
-vector<pair<int,int>> bfsShortestPath(vector<vector<int>>& grid,
-                                      pair<int,int> start,
-                                      pair<int,int> goal) {
+vector<pair<int,int>> bfsShortestPath(vector<vector<int>>& grid, pair<int,int> start, pair<int,int> goal) {
     
     int rows = grid.size();
     int cols = grid[0].size();
