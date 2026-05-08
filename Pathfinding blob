@@ -33,7 +33,7 @@ string makeMaze(string input_string) {
 
     // Allows for clean square form -- for upper bound essentially takes sqrt, truncates to integer,
     // then squares to make the size a clean square root.
-    string maze = total.substr( 0, pow( int(sqrt(total.size())) , 2 ) );
+    string maze = total.substr( 0, pow( int(sqrt(total.size())), 2 ) );
 
     return maze;
 
