@@ -4,5 +4,13 @@ Will Komada
 - 3 hours fixing, checking and testing function. Tried new implementations of path visited logic after bug with it along with other bug fixes of edge cases.
 - 1 hour connecting to partners code and attempting to break it.
 
+Reed Powell:
+- 1 hour researching ASCII tables --> binary conversions to determine the most efficient way to seed the mazes.
+- 2 hours finding the best implementation for this conversion and determining the cleanest way to use the maze output for the searching function. This included testing several solutions, like converting the strings into an array of integers, and simplifying the math required for these conversions to build the squared maze formation in the makeMaze() function.
+- 30 minutes generalizing the maze printing of the maze in printMaze() so that the code does not need to be copied for empty mazes and solved mazes.
+- 1 hour cleaning up the formatting of the printed maze in the printMaze() function by giving the values color, printing row and column numbers, and tweaking the formatting to ensure the alignment does not break with double-digit row and column values.
+- 1 hour building looping structure for different mazes and paths, as well as implementing error checking to avoid breaks in the code.
+- 1 hour bug testing edge cases, working on the GitHub repository to ensure there were no inconsistencies, and cleaning up the user experience.
+
 Writeup
 The hardest part of the assignment was trying to plan and understand how breadth first searches worked. Additionally the already mentioend visted tracker that we already had blocked paths for other potential paths and putting in a new solution for it after trying to fix it took most of our time. Overall this provided an amazing idea on how breadth first search and general pathfinding algorithms work that we plan to implement on our robotics team next year.
