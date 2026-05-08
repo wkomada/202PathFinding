@@ -1,0 +1,5 @@
+Will Komada
+- 1 hour researching bfs/other solutions to maze problem, and implementations.
+- 2 hours putting together bfs function.
+- 3 hours fixing, checking and testing function.
+- 1 hour connecting to partners code and attempting to break it.
