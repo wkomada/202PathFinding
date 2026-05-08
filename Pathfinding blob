@@ -59,6 +59,7 @@ vector<pair<int,int>> bfsShortestPath(vector<vector<int>>& grid, pair<int,int> s
     };
 
     while (!q.empty()) {
+        // Dequeue the front node from the BFS queue
         Node current = q.front();
         q.pop();
 
